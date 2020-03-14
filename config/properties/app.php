@@ -27,6 +27,7 @@ return [
     'service'      => require __DIR__ . DS . 'service.php',
     'breaker'      => require __DIR__ . DS . 'breaker.php',
     'provider'     => require __DIR__ . DS . 'provider.php',
+    'jwt'     => require __DIR__ . DS . 'jwt.php',
     'devtool' => [
         // 是否开启 DevTool，默认值为 false
         'enable' => true,

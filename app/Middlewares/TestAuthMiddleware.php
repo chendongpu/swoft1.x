@@ -10,6 +10,7 @@
 
 namespace App\Middlewares;
 
+use Firebase\JWT\JWT;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -32,7 +33,27 @@ class TestAuthMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         // before request handle
-        return \response()->json(["msg"=>"没有权限不能访问"]);
+
+
+        $header = $request->getHeaders();
+
+        $jwt = $header["token"][0];
+
+        $key=\config('jwt.key');
+        $userInfo=[];
+        try {
+
+            JWT::$leeway = 60; // $leeway in seconds
+
+            $decoded = JWT::decode($jwt, $key, array('HS256'));
+            $userInfo         = (array) $decoded;
+
+        } catch (\Exception $e) {
+            return \response()->json(["msg"=> "授权出错"]);
+        }
+
+        $request->userInfo=$userInfo;
+
 
         $response = $handler->handle($request);
 
