@@ -10,8 +10,10 @@
 
 namespace App\Controllers;
 
+use App\Models\Logic\BusinessLogic;
 use \Swoft\Bean\Annotation\Inject;
 use App\Models\Validate\UserValidate;
+use Swoft\Http\Message\Server\Response;
 use Swoft\Http\Server\Bean\Annotation\Controller;
 use Swoft\Http\Server\Bean\Annotation\RequestMapping;
 use Swoft\Http\Server\Bean\Annotation\RequestMethod;
@@ -28,16 +30,16 @@ class BusinessController{
 
     /**
      * @Inject()
-     * @var UserValidate
+     * @var BusinessLogic
      */
-    private $validate;
+    private $businessLogic;
 
     /**
      * this is a example action. access uri path: /business
      * @RequestMapping(route="/business", method=RequestMethod::GET)
-     * @return string
+     * @return Response
      */
-    public function index(): string
+    public function index(Response $response)
     {
         $data=[
           'email'=>"2323178881@qq.com",
@@ -45,10 +47,7 @@ class BusinessController{
           'password'=>'123456',
           'passwords'=>'123456',
         ];
-        if(!$this->validate->scene('create')->check($data)){
-            return $this->validate->getError();
-        }else{
-            return "success";
-        }
+        $this->businessLogic->create($data);
+        return $response->json(["code"=>200,"message"=>"success"]);
     }
 }
